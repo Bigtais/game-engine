@@ -1,0 +1,92 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+    id 'jacoco'
+    id 'pmd'
+    id "com.github.spotbugs" version "5.0.13"
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+group 'fr.univ_amu'
+
+javafx {
+    version = "21"
+    modules = [ 'javafx.controls', 'javafx.swing', 'javafx.media']
+}
+
+checkstyle {
+    toolVersion = '10.3.4'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.10.0',
+            'org.assertj:assertj-core:3.24.2')
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+}
+
+test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'Gameplay.GameplayMain'
+}
+
+spotbugs {
+    reportLevel = 'high'
+    effort = 'max'
+}
+
+
+spotbugsMain {
+    reports {
+        html {
+            required = true
+            Provider<Directory> output = layout.buildDirectory.dir("reports/spotbugs/main/spotbugs.html")
+            outputLocation = output.get().asFile
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes("Implementation-Title": project.name,
+                "Implementation-Version": version,
+                "Main-Class": application.mainClass)
+    }
+}
+
+spotbugsTest {
+    reports {
+        html {
+            required = true
+            Provider<Directory> output = layout.buildDirectory.dir("reports/spotbugs/test/spotbugs.html")
+            outputLocation = output.get().asFile
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+
+pmd {
+    consoleOutput = true
+    sourceSets = [sourceSets.main]
+    ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
+}
