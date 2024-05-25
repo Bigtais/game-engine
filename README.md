@@ -1,3 +1,8 @@
+Moteur de jeu utilisant Java Swing (pour le coté graphique) et JavaFX (pour le coté son) pour la création de jeux vidéo, conçu dans le cadre du module Génie Logiciel en un groupe constitué de 6 personnes et d'un délais de 8 semaines.
+La méthodologie de développement utilisée est Scrum.
+
+Read me original :
+
 # Projet 
 
 Modèle basique de projet gradle pour interface graphique avec `swing`.
